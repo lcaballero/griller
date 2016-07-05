@@ -6,16 +6,31 @@ import (
 	"os"
 )
 
-func Run() {
-	conf := config.ParseArgs(os.Args)
-	switch conf.Task {
-	case "gen":
-		task.Generate(conf)
-	default:
-		task.Generate(conf)
+func Check(err error, allow ...error) {
+	if err == nil {
+		return
 	}
+	for _, allowed := range allow {
+		if allowed == err {
+			return
+		}
+	}
+	panic(err)
 }
 
+func Run() {
+	err := task.NewDotLoader().Load()
+	Check(err, task.GrillerDoesNotExistError)
 
+	conf, err := config.ParseArgs(os.Args)
+	Check(err)
 
+	switch conf.Task {
+	case "gen":
+		err = task.Generate(conf)
+	default:
+		err = task.Generate(conf)
+	}
 
+	Check(err)
+}
