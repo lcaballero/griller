@@ -127,8 +127,10 @@ func (g *Gen) process(dest string, src []byte) error {
 		return err
 	}
 
+	data := g.TemplateData()
+	g.log.Printf("data: %s", data)
 	buf := bytes.NewBuffer([]byte{})
-	err = tp.Execute(buf, g.TemplateData())
+	err = tp.Execute(buf, data)
 	if err != nil {
 		g.log.Println(err)
 		return err
