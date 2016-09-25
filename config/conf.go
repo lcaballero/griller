@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/jessevdk/go-flags"
 	"encoding/json"
+	"os"
 )
 
 type Conf struct {
@@ -25,6 +26,9 @@ func ParseArgs(params []string) (*Conf, error) {
 	conf := &Conf{}
 	parser := flags.NewParser(conf, flags.Default)
 	_, err := parser.ParseArgs(params)
+	if err != nil && len(params) == 1 {
+		parser.WriteHelp(os.Stdout)
+	}
 	if err != nil {
 		return nil, err
 	}
