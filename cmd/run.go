@@ -23,7 +23,9 @@ func Run() {
 	Check(err, task.GrillerDoesNotExistError)
 
 	conf, err := config.ParseArgs(os.Args)
-	Check(err)
+	if err != nil {
+		return
+	}
 
 	switch conf.Task {
 	case "gen":
