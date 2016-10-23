@@ -1,15 +1,20 @@
 package task
 
 import (
+	"bytes"
 	"github.com/lcaballero/griller/config"
-	"path/filepath"
-	"os"
 	"github.com/lcaballero/griller/embedded"
 	"io/ioutil"
-	"text/template"
+	"os"
+	"path/filepath"
 	"strings"
-	"bytes"
+	"text/template"
+	"fmt"
 )
+
+// NoTemplateFilesError occurs when the template name doesn't map
+// to any files.
+var NoTemplateFilesError = fmt.Errorf("no template files found error")
 
 // Generate constructs a Gen instance with the given conf and
 // immediately call Run returning the error.
@@ -20,7 +25,7 @@ func Generate(conf *config.Conf) error {
 // Gen is project generator based on a configuration.
 type Gen struct {
 	conf *config.Conf
-	log *Log
+	log  *Log
 }
 
 // NewGen allocates a Gen instance capable of producing
@@ -28,22 +33,34 @@ type Gen struct {
 func NewGen(config *config.Conf) *Gen {
 	return &Gen{
 		conf: config,
-		log: NewLog(config),
+		log:  NewLog(config),
 	}
 }
 
 func (g *Gen) TemplateData() Data {
 	return Data{
-		PackageName: g.conf.Name,
-		Remote: g.conf.Remote,
+		PackageName: g.conf.Template.Project,
+		Remote:      g.conf.Remote,
 	}
 }
 
 // Run carries out project generation, making directories and files,
 // returning an error if one is produced during generation.
 func (g *Gen) Run() error {
-	g.log.Println("Generating Project: ", g.conf.Name)
-	dest := filepath.Join(g.conf.Dest, g.conf.Name)
+	g.log.Println("generating new project named:", g.conf.Template.Project)
+	dest := filepath.Join(g.conf.Dest, g.conf.Template.Project)
+	prefix, assets, dirs := g.TemplateAssets()
+
+	g.log.Println("prefix:", prefix)
+	g.log.Println("assets:", assets)
+	g.log.Println("dirs:", dirs)
+
+	if len(assets) <= 0 {
+		g.log.Println("source template name:", g.conf.Template.Name)
+		return NoTemplateFilesError
+	}
+
+	g.log.Println("creating root", dest)
 
 	err := os.MkdirAll(dest, 0777)
 	if err != nil {
@@ -63,15 +80,53 @@ func (g *Gen) Run() error {
 	return nil
 }
 
+// TemplateAssets provides those assets for the configured template name.
+func (g *Gen) TemplateAssets() (string, []string, []string) {
+	names := make([]string, 0)
+	dirSet := make(map[string]struct{}, 0)
+	prefix := fmt.Sprintf("%s/", g.conf.Template.Name)
+	n := len(prefix)
+	assets := embedded.AssetNames()
+
+	for _, name := range assets {
+		value := name[n:]
+		isForTemplate := strings.HasPrefix(name, prefix)
+
+		dir := filepath.Dir(name)
+
+		_, ok := dirSet[dir]
+		isDir := !ok && dir != "" && dir != "." && dir != g.conf.Template.Name && isForTemplate
+
+		if isDir {
+			d := dir[n:]
+			dirSet[d] = struct{}{}
+		}
+
+		if isForTemplate {
+			names = append(names, value)
+		}
+	}
+
+	dirs := make([]string, 0)
+	for k, _ := range dirSet {
+		if k != "" {
+			dirs = append(dirs, k)
+		}
+	}
+
+	return prefix, names, dirs
+}
+
 // cp copies assets directly from the source to the destination producing
 // an error if one occurs during generation.
 func (g *Gen) cp() error {
-	names := embedded.AssetNames()
-	target := filepath.Join(g.conf.Dest, g.conf.Name)
-	for _, name := range names {
+	target := filepath.Join(g.conf.Dest, g.conf.Template.Project)
+	prefix, assets, _ := g.TemplateAssets()
+
+	for _, name := range assets {
 		dest := filepath.Join(target, name)
 
-		bin, err := embedded.Asset(name)
+		bin, err := embedded.Asset(prefix + name)
 		if err != nil {
 			return err
 		}
@@ -96,22 +151,28 @@ func (g *Gen) write(dest string, bin []byte) error {
 
 // mkdirs produces directories where all new files will exist.
 func (g *Gen) mkdirs() error {
-	names := embedded.AssetNames()
-	target := filepath.Join(g.conf.Dest, g.conf.Name)
-	for _, name := range names {
-		dest := filepath.Join(target, name)
-		dir := filepath.Dir(dest)
+	_, _, dirs := g.TemplateAssets()
+	target := filepath.Join(g.conf.Dest, g.conf.Template.Project)
 
-		if dir == target {
+	for _, name := range dirs {
+		dest := filepath.Join(target, name)
+
+		info, err := os.Stat(dest)
+		if err == nil && !info.IsDir() {
 			continue
 		}
+		if err != nil && !os.IsNotExist(err) {
 
-		g.log.Println("creating directory:", dir)
+		}
 
-		err := os.Mkdir(dir, 0777)
+		g.log.Println("creating directory:", name, dest)
+
+		err = os.Mkdir(dest, 0777)
 		if err != nil {
 			return err
 		}
+
+		g.log.Println("created directory:", dest)
 	}
 	return nil
 }
@@ -120,7 +181,7 @@ func (g *Gen) mkdirs() error {
 func (g *Gen) process(dest string, src []byte) error {
 	g.log.Printf("processing template: %s", dest)
 
-	p := template.New(g.conf.Name)
+	p := template.New(g.conf.Template.Project)
 	tp, err := p.Parse(string(src))
 	if err != nil {
 		g.log.Println(err)

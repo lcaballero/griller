@@ -1,10 +1,10 @@
 package task
 
 import (
-	"os"
-	"path/filepath"
 	"encoding/json"
 	"errors"
+	"os"
+	"path/filepath"
 )
 
 /*
@@ -18,7 +18,7 @@ import (
     "Dest": "$GOPATH/src/github.com/saber"
   }
 
- */
+*/
 type Dotfile struct {
 	Remote string // example: github.com/lcaballero
 	Dest   string // example: github.com/lcaballero
@@ -35,7 +35,7 @@ type DotLoader struct {
 
 func NewDotLoader() *DotLoader {
 	return &DotLoader{
-		Env: os.LookupEnv,
+		Env:     os.LookupEnv,
 		DotName: DefaultGrillerConf,
 	}
 }
@@ -93,7 +93,7 @@ func (d DotLoader) Exists() (string, bool) {
 	return name, true
 }
 
-func (d *DotLoader) Open() (*os.File, error){
+func (d *DotLoader) Open() (*os.File, error) {
 	name, ok := d.Exists()
 	if !ok {
 		return nil, GrillerDoesNotExistError

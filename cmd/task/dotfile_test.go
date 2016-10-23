@@ -1,8 +1,8 @@
 package task
 
 import (
-	"testing"
 	. "github.com/lcaballero/exam/assert"
+	"testing"
 )
 
 func Test_Dotfile_002(t *testing.T) {
