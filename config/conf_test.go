@@ -1,8 +1,8 @@
 package config
 
 import (
-	"testing"
 	. "github.com/lcaballero/exam/assert"
+	"testing"
 )
 
 func Test_Config_001(t *testing.T) {

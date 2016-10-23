@@ -1,8 +1,10 @@
 package cmd
 
 import (
-	"github.com/lcaballero/griller/config"
+	"encoding/json"
+	"fmt"
 	"github.com/lcaballero/griller/cmd/task"
+	"github.com/lcaballero/griller/config"
 	"os"
 )
 
@@ -22,17 +24,16 @@ func Run() {
 	err := task.NewDotLoader().Load()
 	Check(err, task.GrillerDoesNotExistError)
 
-	conf, err := config.ParseArgs(os.Args)
+	conf, err := config.ParseArgs(os.Args[1:])
 	if err != nil {
 		return
 	}
 
-	switch conf.Task {
-	case "gen":
-		err = task.Generate(conf)
-	default:
-		err = task.Generate(conf)
+	if conf.Debug && conf.ShowValues {
+		b, err := json.MarshalIndent(conf, "", "  ")
+		Check(err)
+		fmt.Println(string(b))
 	}
 
-	Check(err)
+	Check(task.Generate(conf))
 }
