@@ -1,0 +1,31 @@
+#+BEGIN_HTML
+<img src="https://goreportcard.com/badge/" 
+     tag="https://goreportcard.com/badge/" />
+#+END_HTML
+
+* Introduction
+
+=cmd= provides useful ability.
+
+** Installation
+
+#+BEGIN_SRC shell
+go get -u github.com/[cmd]
+#+END_SRC
+
+** Usage
+
+#+BEGIN_SRC shell
+cmd -h
+#+END_SRC
+
+*** License
+
+See License File.
+
+The use and distribution terms for this software are covered by the
+[[http://opensource.org/licenses/eclipse-1.0.txt][Eclipse Public License 1.0]], which can be found in the file ‘license’
+at the root of this distribution. By using this software in any
+fashion, you are agreeing to be bound by the terms of this
+license. You must not remove this notice, or any other, from this
+software.

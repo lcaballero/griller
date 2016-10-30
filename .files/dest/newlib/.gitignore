@@ -30,8 +30,12 @@ hs_err_pid*
 doc/
 docs/
 node_modules/
+.files/
 .idea/
 pkg/
 bin/
 
-readme.html
+files/elasticsearch/
+src/tmp-*
+src/github.com/
+src/golang.org/

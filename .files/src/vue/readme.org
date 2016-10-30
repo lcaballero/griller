@@ -1,0 +1,76 @@
+* Introduction
+
+=my-vue-app= is a truly bare-bones example of [[https://webpack.github.io/][webpack]] and [[http://vuejs.org/][vuejs]].  It
+should run after initial setup.
+
+** Prerequisites
+
+=node.js= and =npm= must be installed.  I find it useful to have
+=./node_modules/.bin= on the path.  The advantages: don't require
+further dependencies be installed that are already in =package.json=
+and usage of =webpack= need not be installed globally.  The whole
+directory becomes very portable as a result.
+
+** Setup
+
+These commands install the node module dependencies and transpile
+assets.  =-w= causes webpack to watch the file structure and
+re-transpiles assets that have changed.
+
+#+BEGIN_SRC shell
+npm install
+webpack -w
+#+END_SRC
+
+Then in another terminal start the webserver.  As development
+progresses the process running webpack will rebuild assets, and the
+process below will serve up those assets.
+
+#+BEGIN_SRC shell
+webpack-dev-server --inline
+#+END_SRC
+
+** Client Assets
+
+**** *index.html*
+Take note of the element shown as:
+#+BEGIN_SRC html
+<div id="app">
+  <app></app>
+</div>
+#+END_SRC
+
+This is the root mount point for the vue.js application.  It contains
+an app component.  The div and ID are specified to provide the
+main.es6 a location to bind the starting point.
+
+**** *src/app.vue*
+app.vue is a component combine by web pack and provided to JS code via
+require(..) calls.  The component by convention is the =app= element.
+
+**** *src/main.es6*
+The main file which initializes the page.  It references the div
+containing the element.  It imports Vue and bootstraps it and loads
+the App component and integrates it.
+
+** Development Files
+
+**** *package.json*
+Minimal amount of dependencies to get this application transpiled and
+served. 
+
+**** *.babelrc*
+Required to transpile es6.
+
+**** *.gitignore*
+Of note, this file contains the line =dist/= which will ignore
+generated assets so that they don't get commited to the repository.
+Which means webpack must be ran before the app is useable.
+
+**** *webpack.config.js*
+Contains a minimal config for webpack with additional locations to
+lookup importable JS code/components.  For instance, becuase of the
+resolve values Vue and be imported like so: =require('vue.js').
+
+
+
