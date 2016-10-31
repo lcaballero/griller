@@ -392,19 +392,19 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"go/.gitignore": goGitignore,
-	"go/license": goLicense,
-	"go/main.tpl.go": goMainTplGo,
-	"go/cli/parse.tpl.go": goCliParseTplGo,
-	"go/conf/config.go": goConfConfigGo,
-	"vue/.babelrc": vueBabelrc,
-	"vue/.gitignore": vueGitignore,
-	"vue/index.html": vueIndexHtml,
-	"vue/package.json": vuePackageJson,
-	"vue/readme.org": vueReadmeOrg,
+	"go/.gitignore":         goGitignore,
+	"go/license":            goLicense,
+	"go/main.tpl.go":        goMainTplGo,
+	"go/cli/parse.tpl.go":   goCliParseTplGo,
+	"go/conf/config.go":     goConfConfigGo,
+	"vue/.babelrc":          vueBabelrc,
+	"vue/.gitignore":        vueGitignore,
+	"vue/index.html":        vueIndexHtml,
+	"vue/package.json":      vuePackageJson,
+	"vue/readme.org":        vueReadmeOrg,
 	"vue/webpack.config.js": vueWebpackConfigJs,
-	"vue/src/app.vue": vueSrcAppVue,
-	"vue/src/main.es6": vueSrcMainEs6,
+	"vue/src/app.vue":       vueSrcAppVue,
+	"vue/src/main.es6":      vueSrcMainEs6,
 }
 
 // AssetDir returns the file names below a certain
@@ -446,6 +446,7 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"go": &bintree{nil, map[string]*bintree{
 		".gitignore": &bintree{goGitignore, map[string]*bintree{}},
@@ -455,17 +456,17 @@ var _bintree = &bintree{nil, map[string]*bintree{
 		"conf": &bintree{nil, map[string]*bintree{
 			"config.go": &bintree{goConfConfigGo, map[string]*bintree{}},
 		}},
-		"license": &bintree{goLicense, map[string]*bintree{}},
+		"license":     &bintree{goLicense, map[string]*bintree{}},
 		"main.tpl.go": &bintree{goMainTplGo, map[string]*bintree{}},
 	}},
 	"vue": &bintree{nil, map[string]*bintree{
-		".babelrc": &bintree{vueBabelrc, map[string]*bintree{}},
-		".gitignore": &bintree{vueGitignore, map[string]*bintree{}},
-		"index.html": &bintree{vueIndexHtml, map[string]*bintree{}},
+		".babelrc":     &bintree{vueBabelrc, map[string]*bintree{}},
+		".gitignore":   &bintree{vueGitignore, map[string]*bintree{}},
+		"index.html":   &bintree{vueIndexHtml, map[string]*bintree{}},
 		"package.json": &bintree{vuePackageJson, map[string]*bintree{}},
-		"readme.org": &bintree{vueReadmeOrg, map[string]*bintree{}},
+		"readme.org":   &bintree{vueReadmeOrg, map[string]*bintree{}},
 		"src": &bintree{nil, map[string]*bintree{
-			"app.vue": &bintree{vueSrcAppVue, map[string]*bintree{}},
+			"app.vue":  &bintree{vueSrcAppVue, map[string]*bintree{}},
 			"main.es6": &bintree{vueSrcMainEs6, map[string]*bintree{}},
 		}},
 		"webpack.config.js": &bintree{vueWebpackConfigJs, map[string]*bintree{}},
@@ -518,4 +519,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

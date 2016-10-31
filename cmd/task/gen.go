@@ -2,6 +2,7 @@ package task
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/lcaballero/griller/config"
 	"github.com/lcaballero/griller/embedded"
 	"io/ioutil"
@@ -9,12 +10,15 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
-	"fmt"
 )
 
 // NoTemplateFilesError occurs when the template name doesn't map
 // to any files.
 var NoTemplateFilesError = fmt.Errorf("no template files found error")
+
+// BoilerPlateMissingParamsError occurs when template command is given
+// without the rest of the required parameters.
+var TemplatePlateMissingParamsError = fmt.Errorf("template plate missing params error")
 
 // Generate constructs a Gen instance with the given conf and
 // immediately call Run returning the error.
@@ -47,6 +51,11 @@ func (g *Gen) TemplateData() Data {
 // Run carries out project generation, making directories and files,
 // returning an error if one is produced during generation.
 func (g *Gen) Run() error {
+	tp := g.conf.Template
+	if tp.Name == "" || tp.Project == "" {
+		return TemplatePlateMissingParamsError
+	}
+
 	g.log.Println("generating new project named:", g.conf.Template.Project)
 	dest := filepath.Join(g.conf.Dest, g.conf.Template.Project)
 	prefix, assets, dirs := g.TemplateAssets()
