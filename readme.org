@@ -1,3 +1,15 @@
+#+BEGIN_HTML
+<img src="https://goreportcard.com/badge/github.com/lcaballero/griller" 
+     tag="https://goreportcard.com/badge/github.com/lcaballero/griller" />
+
+<a href="https://godoc.org/github.com/lcaballero/griller">
+   <img src="https://godoc.org/github.com/lcaballero/griller?status.svg" alt="GoDoc"/>
+</a>
+
+<img src="https://travis-ci.org/lcaballero/griller.svg?branch=master"/>
+#+END_HTML
+
+
 * Introduction
 
 =griller= creates a starter projects with some basic structure.  For
