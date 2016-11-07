@@ -1,0 +1,12 @@
+language: go
+
+go:
+   - 1.6
+
+install:
+- export PATH=$PATH:$HOME/gopath/bin
+- go get github.com/lcaballero/exam
+- go get github.com/lcaballero/griller
+- go get github.com/jessevdk/go-flags
+
+script: cd $HOME/gopath/src/github.com/lcaballero/griller && go test --race ./...
