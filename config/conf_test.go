@@ -7,7 +7,7 @@ import (
 
 func Test_Config_001(t *testing.T) {
 	t.Log("Arguments should come from command line flags")
-	params := []string{"template", "--template-name", "templatename", "--project", "projectname"}
+	params := []string{"template", "--template-name", "templatename", "--project", "projectname", "--remote", "github.com/lcaballero"}
 	conf, _, err := ParseArgs(params)
 
 	IsNil(t, err)
