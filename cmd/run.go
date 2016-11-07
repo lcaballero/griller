@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func Check(err error, allow ...error) {
+func check(err error, allow ...error) {
 	if err == nil {
 		return
 	}
@@ -22,19 +22,23 @@ func Check(err error, allow ...error) {
 	panic(err)
 }
 
+// Run executes the generator causing it to parse the command line
+// and generating any boiler plate code based on system setup or
+// parsed flags.
 func Run() {
 	err := task.NewDotLoader().Load()
-	Check(err, task.GrillerDoesNotExistError)
+	check(err, task.ErrGrillerDoesNotExist)
 
 	args := os.Args[1:]
-	conf, err := config.ParseArgs(args)
+	conf, parser, err := config.ParseArgs(args)
 	if err != nil {
+		parser.WriteHelp(os.Stdout)
 		return
 	}
 
 	if conf.ShowValues {
 		b, err := json.MarshalIndent(conf, "", "  ")
-		Check(err)
+		check(err)
 		fmt.Println(string(b))
 		return
 	}
@@ -58,7 +62,7 @@ func listTemplateNames() {
 		set[template] = struct{}{}
 	}
 	fmt.Println("Available Templates:")
-	for k,_ := range set {
+	for k := range set {
 		fmt.Printf("  %s\n", k)
 	}
 }

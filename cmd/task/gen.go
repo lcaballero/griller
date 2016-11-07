@@ -12,13 +12,13 @@ import (
 	"text/template"
 )
 
-// NoTemplateFilesError occurs when the template name doesn't map
+// ErrNoTemplateFiles occurs when the template name doesn't map
 // to any files.
-var NoTemplateFilesError = fmt.Errorf("no template files found error")
+var ErrNoTemplateFiles = fmt.Errorf("no template files found error")
 
-// BoilerPlateMissingParamsError occurs when template command is given
+// ErrTemplatePlateMissingParams occurs when template command is given
 // without the rest of the required parameters.
-var TemplatePlateMissingParamsError = fmt.Errorf("template plate missing params error")
+var ErrTemplatePlateMissingParams = fmt.Errorf("template plate missing params error")
 
 // Generate constructs a Gen instance with the given conf and
 // immediately call Run returning the error.
@@ -41,6 +41,8 @@ func NewGen(config *config.Conf) *Gen {
 	}
 }
 
+// TemplateData exposes some key values from the generator for debugging
+// purposes.
 func (g *Gen) TemplateData() Data {
 	return Data{
 		PackageName: g.conf.Template.Project,
@@ -53,7 +55,7 @@ func (g *Gen) TemplateData() Data {
 func (g *Gen) Run() error {
 	tp := g.conf.Template
 	if tp.Name == "" || tp.Project == "" {
-		return TemplatePlateMissingParamsError
+		return ErrTemplatePlateMissingParams
 	}
 
 	g.log.Println("generating new project named:", g.conf.Template.Project)
@@ -66,7 +68,7 @@ func (g *Gen) Run() error {
 
 	if len(assets) <= 0 {
 		g.log.Println("source template name:", g.conf.Template.Name)
-		return NoTemplateFilesError
+		return ErrNoTemplateFiles
 	}
 
 	g.log.Println("creating root", dest)
@@ -117,7 +119,7 @@ func (g *Gen) TemplateAssets() (string, []string, []string) {
 	}
 
 	dirs := make([]string, 0)
-	for k, _ := range dirSet {
+	for k := range dirSet {
 		if k != "" {
 			dirs = append(dirs, k)
 		}
