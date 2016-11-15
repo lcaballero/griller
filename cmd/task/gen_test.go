@@ -40,11 +40,11 @@ func Test_Gen_002(t *testing.T) {
 
 	Exists(t, dest,
 		"gen-001",
-		"gen-001/cli/parse.tpl.go",
+		"gen-001/cli/parse.go",
 		"gen-001/conf/config.go",
 		"gen-001/.gitignore",
 		"gen-001/license",
-		"gen-001/main.tpl.go",
+		"gen-001/main.go",
 	)
 }
 
