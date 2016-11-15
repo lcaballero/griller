@@ -1,0 +1,12 @@
+# Local Variables:
+# eval: (setq org-html-head-include-default-style nil)
+# eval: (setq org-html-head-include-scripts nil)
+# End:
+
+#+SETUPFILE: setup-file.org
+
+* First Bullet
+
+** Here's the next bullet
+
+[[http://www.google.com][And a link]] 
