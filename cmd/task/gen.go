@@ -142,7 +142,9 @@ func (g *Gen) cp() error {
 			return err
 		}
 
-		if strings.HasSuffix(dest, ".tpl.go") {
+		tpls := ".tpl.go"
+		if strings.HasSuffix(dest, tpls) {
+			dest = fmt.Sprintf("%s.go", dest[:len(dest) - len(tpls)])
 			g.process(dest, bin)
 			continue
 		}
