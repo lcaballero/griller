@@ -9,7 +9,7 @@ import (
 
 func main() {
 	fmt.Println("Hello, World!")
-	conf := cli.ParseArgs(os.Args...)
+	conf := cli.ParseArgs(os.Args[1:]...)
 	bin, err := json.MarshalIndent(conf, "", "  ")
 	if err != nil {
 		panic(err)
